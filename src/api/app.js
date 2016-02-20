@@ -10,6 +10,7 @@ let app = restify.createServer({
 });
 
 app.use(restify.bodyParser());
+app.use(restify.CORS());
 
 export default function runServer(modules) {
   /*
