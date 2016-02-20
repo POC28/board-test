@@ -12,13 +12,22 @@ export default class BoardRepository {
   }
 
   get(id) {
-    return this.collection.findOne({ _id: new ObjectID(id) });
+    return new Promise((resolve, reject) => {
+      this.collection.findOne({ _id: new ObjectID(id) }).then(result => {
+        result.id = result._id;
+        delete result._id;
+        resolve(result);
+      }, reject);
+    });
   }
 
   create(board) {
     return new Promise((resolve, reject) => {
       this.collection.insert(board).then(result => {
-        resolve(result.ops[0]);
+        result = result.ops[0];
+        result.id = result._id;
+        delete result._id;
+        resolve(result);
       }, reject);
     });
   }
@@ -26,7 +35,7 @@ export default class BoardRepository {
   update(id, updates) {
     return new Promise((resolve, reject) => {
       this.collection.updateOne({ _id: new ObjectID(id) }, updates).then(result => {
-        let res = result.result.nModified > 0 ? {} : null;
+        let res = result.result.nModified > 0 ? { id: id } : null;
         resolve(res);
       }, reject);
     });

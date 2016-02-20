@@ -15,7 +15,7 @@ let client = restify.createJsonClient({
 
 let mongoURL = 'mongodb://localhost/infinityboard_test';
 
-describe('Server', () => {
+describe('Server:', () => {
   let server;
   let db;
 
@@ -41,7 +41,7 @@ describe('Server', () => {
         should.not.exist(err);
         obj.should.exist;
         obj.title.should.equal(board.title);
-        board_id = obj._id;
+        board_id = obj.id;
         done();
       });
     });
@@ -52,6 +52,7 @@ describe('Server', () => {
       client.put('/boards/' + board_id, updates, (err, req, res, obj) => {
         should.not.exist(err);
         obj.should.exist;
+        obj.id.should.equal(board_id);
         done();
       });
     });
@@ -68,7 +69,7 @@ describe('Server', () => {
         should.not.exist(err);
         obj.should.exist;
         obj.title.should.equal('another title');
-        obj._id.should.equal(board_id);
+        obj.id.should.equal(board_id);
         done();
       });
     });

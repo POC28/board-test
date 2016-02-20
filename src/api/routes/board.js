@@ -4,6 +4,7 @@ let basePath = '/boards';
 
 let defaultErrorHandler = function (res, next) {
   return function (err) {
+    console.log(err);
     res.send(500);
     next(err);
   };
@@ -33,8 +34,7 @@ export default function bootstrap (app, board) {
 
   app.put(basePath + '/:id', (req, res, next) => {
     board.update(req.params.id, req.body).then(result => {
-      console.log('result', result);
-      res.send(result ? req.params.id : 404);
+      res.send(result || 404);
       next();
     }, defaultErrorHandler(res, next));
   });
