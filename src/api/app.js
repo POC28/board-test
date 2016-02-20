@@ -17,12 +17,14 @@ export default function runServer(modules) {
     secretOrKey: 'secret'
   };
 
+  /*
   passport.use(new passportJWT.Strategy(opt, function (payload, done) {
     modules.user.get({ id: payload.sub }).then(
       (result) => done(null, result || false),
       (err) => done(err, false)
     );
   }));
+  */
 
   bindRoutes(app, modules, passport);
 
