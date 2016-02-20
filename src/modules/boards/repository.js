@@ -6,6 +6,6 @@ export default class BoardRepository {
   }
 
   getAll() {
-    return new Promise((resolve, reject) => resolve({}));
+    return new Promise((resolve, reject) => resolve([{ id: 1, name: 'abc' }, { id: 2, name: 'def' }]));
   }
 }
