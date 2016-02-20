@@ -31,7 +31,7 @@ describe('Server:', () => {
     });
   });
 
-  context('Board routes', () => {
+  context('/boards', () => {
     let board_id;
 
     it('POST should create a new board', done => {
@@ -85,6 +85,13 @@ describe('Server:', () => {
       client.del('/boards/' + board_id, (err, req, res) => {
         should.not.exist(err);
         res.statusCode.should.equal(204);
+        done();
+      });
+    });
+
+    it('DELETE with nonexistent id should return a 404', done => {
+      client.del('/boards/abcdefabcdef', (err, req, res) => {
+        res.statusCode.should.equal(404);
         done();
       });
     });

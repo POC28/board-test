@@ -41,8 +41,7 @@ export default function bootstrap (app, board) {
 
   app.del(basePath + '/:id', (req, res, next) => {
     board.delete(req.params.id).then(result => {
-      result = result ? 204 : 404;
-      res.send(result);
+      res.send(result ? 204 : 404);
       next();
     }, defaultErrorHandler(res, next));
   });

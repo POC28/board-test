@@ -17,7 +17,7 @@ export default class BoardRepository {
         if (!result) {
           return resolve(404);
         }
-        
+
         result.id = result._id;
         delete result._id;
         resolve(result);
@@ -46,6 +46,10 @@ export default class BoardRepository {
   }
 
   delete(id) {
-    return this.collection.deleteOne({ _id: new ObjectID(id) });
+    return new Promise((resolve, reject) => {
+      this.collection.deleteOne({ _id: new ObjectID(id) }).then(result => {
+        resolve(result.deletedCount);
+      }, reject);
+    });
   }
 }
