@@ -17,13 +17,13 @@ gulp.task('clean', () =>
   gulp.src('lib').pipe(clean())
 );
 
-gulp.task('babel', ['clean'], () =>
+gulp.task('build', ['clean'], () =>
   gulp.src('src/**/*.js')
     .pipe(babel())
     .pipe(gulp.dest('lib'))
 );
 
-gulp.task('test', ['babel'], () =>
+gulp.task('test', ['build'], () =>
   gulp.src('test/**/*.js')
     .pipe(mocha({
       reporter: 'nyan',
@@ -38,7 +38,7 @@ gulp.task('run', ['babel'], () =>
     script: 'lib/index.js',
     ext: 'js',
     ignore: ['node_modules', 'lib', '.git'],
-    tasks: ['babel']
+    tasks: ['build']
   })
 );
 
