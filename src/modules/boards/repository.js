@@ -14,6 +14,10 @@ export default class BoardRepository {
   get(id) {
     return new Promise((resolve, reject) => {
       this.collection.findOne({ _id: new ObjectID(id) }).then(result => {
+        if (!result) {
+          return resolve(404);
+        }
+        
         result.id = result._id;
         delete result._id;
         resolve(result);

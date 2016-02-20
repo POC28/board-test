@@ -12,12 +12,12 @@ let app = restify.createServer({
 app.use(restify.bodyParser());
 
 export default function runServer(modules) {
+  /*
   let opt = {
     jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeader(),
     secretOrKey: 'secret'
   };
 
-  /*
   passport.use(new passportJWT.Strategy(opt, function (payload, done) {
     modules.user.get({ id: payload.sub }).then(
       (result) => done(null, result || false),

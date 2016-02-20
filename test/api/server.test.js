@@ -74,6 +74,13 @@ describe('Server:', () => {
       });
     });
 
+    it('GET with nonexistent id should return a 404', done => {
+      client.get('/boards/abcdefabcdef', (err, req, res) => {
+        res.statusCode.should.equal(404);
+        done();
+      });
+    });
+
     it('DELETE with id should delete a board', done => {
       client.del('/boards/' + board_id, (err, req, res) => {
         should.not.exist(err);
