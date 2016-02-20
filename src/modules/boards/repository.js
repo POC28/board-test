@@ -8,7 +8,17 @@ export default class BoardRepository {
   }
 
   getAll() {
-    return this.collection.find({}).toArray();
+    return new Promise((resolve, reject) => {
+      this.collection.find({}).toArray().then(results => {
+        results = results.map(item => {
+          item.id = item._id;
+          delete item._id;
+          return item;
+        });
+
+        resolve(results);
+      });
+    });
   }
 
   get(id) {
