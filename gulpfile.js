@@ -13,13 +13,17 @@ gulp.task('jshint', () =>
     .pipe(jshint.reporter('jshint-stylish'))
 );
 
-gulp.task('babel', () =>
+gulp.task('clean', () =>
+  gulp.src('lib').pipe(clean())
+);
+
+gulp.task('babel', ['clean'], () =>
   gulp.src('src/**/*.js')
     .pipe(babel())
     .pipe(gulp.dest('lib'))
 );
 
-gulp.task('test', () =>
+gulp.task('test', ['babel'], () =>
   gulp.src('test/**/*.js')
     .pipe(mocha({
       reporter: 'nyan',
@@ -34,8 +38,8 @@ gulp.task('run', () =>
     script: 'lib/index.js',
     ext: 'js',
     ignore: ['node_modules', 'lib', '.git'],
-    tasks: ['babel']
+    tasks: ['clean', 'babel']
   })
 );
 
-gulp.task('default', ['jshint', 'babel', 'test']);
+gulp.task('default', ['jshint', 'test']);
