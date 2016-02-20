@@ -33,12 +33,12 @@ gulp.task('test', ['babel'], () =>
     }))
 );
 
-gulp.task('run', () => 
+gulp.task('run', ['babel'], () => 
   nodemon({
     script: 'lib/index.js',
     ext: 'js',
     ignore: ['node_modules', 'lib', '.git'],
-    tasks: ['clean', 'babel']
+    tasks: ['babel']
   })
 );
 

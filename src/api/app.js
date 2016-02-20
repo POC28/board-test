@@ -12,5 +12,5 @@ export default function runServer(modules) {
 
   let port = process.env.PORT || 9000;
 
-  app.run(port, () => console.log('server running on port ' + port));
+  app.listen(port, () => console.log('server running on port ' + port));
 }
