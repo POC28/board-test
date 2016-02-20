@@ -10,17 +10,17 @@ let app = restify.createServer({
 });
 
 export default function runServer(modules) {
-  passport.use(new passportJWT.JWTStrategy(opt, function (payload, done) {
+  passport.use(new passportJWT.JwtStrategy(opt, function (payload, done) {
     modules.user.get({ id: payload.sub }).then(
       (result) => done(null, result || false),
       (err) => done(err, false)
     );
   }));
-  
+
   bindRoutes(app, modules, passport);
 
   let opt = {
-    jwtFromRequest: passportJWT.ExtractJWT.fromAuthHeader(),
+    jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeader(),
     secretOrKey: 'secret'
   };
 
