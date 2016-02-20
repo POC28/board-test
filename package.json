@@ -21,9 +21,7 @@
     "passport": "^0.3.2",
     "passport-jwt": "^2.0.0",
     "restify": "^4.0.4",
-    "gulp": "^3.9.1"
-  },
-  "devDependencies": {
+    "gulp": "^3.9.1",
     "babel-cli": "^6.5.1",
     "babel-preset-es2015": "^6.5.0",
     "chai": "^3.5.0",
