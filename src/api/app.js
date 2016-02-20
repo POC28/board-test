@@ -9,6 +9,8 @@ let app = restify.createServer({
   name: 'infinityBoard'
 });
 
+app.use(restify.bodyParser());
+
 export default function runServer(modules) {
   let opt = {
     jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeader(),
@@ -27,4 +29,5 @@ export default function runServer(modules) {
   let port = process.env.PORT || 9000;
 
   app.listen(port, () => console.log('server running on port ' + port));
+  return app;
 }

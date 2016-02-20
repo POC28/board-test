@@ -33,7 +33,7 @@ gulp.task('test', ['build'], () =>
     }))
 );
 
-gulp.task('run', ['babel'], () => 
+gulp.task('run', ['build'], () => 
   nodemon({
     script: 'lib/index.js',
     ext: 'js',

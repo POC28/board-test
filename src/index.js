@@ -1,9 +1,18 @@
 'use strict';
 
-import setupModules from './modules'; 
+import {MongoClient} from 'mongodb';
+
+import setupModules from './modules';
 import runServer from './api/app';
 
-let db = {}; // TODO: setup database
-let modules = setupModules(db);
+let mongoURL = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/infinityboard';
 
-runServer(modules);
+MongoClient.connect(mongoURL, (err, db) => {
+  if(err) {
+    throw new Error(err);
+  }
+
+  console.log('connected to mongodb at ' + mongoURL);
+
+  runServer(setupModules(db));
+});
