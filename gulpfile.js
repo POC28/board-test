@@ -3,7 +3,7 @@
 const gulp = require('gulp');
 const jshint = require('gulp-jshint');
 const babel = require('gulp-babel');
-const mocha = require('gulp-mocha');
+const mocha = require('gulp-spawn-mocha');
 const nodemon = require('gulp-nodemon');
 const clean = require('gulp-clean');
 
@@ -23,13 +23,11 @@ gulp.task('build', ['clean'], () =>
     .pipe(gulp.dest('lib'))
 );
 
-gulp.task('test', ['build'], () =>
-  gulp.src('test/**/*.js')
+gulp.task('test', ['jshint', 'build'], () =>
+  gulp.src('test/**/*.js', { read: false })
     .pipe(mocha({
-      reporter: 'nyan',
-      compilers: {
-        js: require('babel-core/register')
-      }
+      R: 'nyan',
+      compilers: 'js:babel-core/register'
     }))
 );
 
