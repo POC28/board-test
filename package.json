@@ -1,0 +1,22 @@
+{
+  "name": "infinityboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/POC28/infinityboard.git"
+  },
+  "author": "POC28",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/POC28/infinityboard/issues"
+  },
+  "homepage": "https://github.com/POC28/infinityboard#readme",
+  "dependencies": {
+    "jshint": "^2.9.1"
+  }
+}
