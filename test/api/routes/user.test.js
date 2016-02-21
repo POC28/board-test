@@ -69,7 +69,6 @@ describe('Server:', () => {
           done();
         });
       });
-
     });
 
     context('/login', () => {
@@ -139,6 +138,31 @@ describe('Server:', () => {
 
         client.get('/users/current', (err, req, res) => {
           res.statusCode.should.equal(401);
+          done();
+        });
+      });
+    });
+
+    context('', () => {
+      it('PUT without token should return a 401', done => {
+        client.headers.authorization = null;
+
+        client.put('/users', {}, (err, req, res) => {
+          res.statusCode.should.equal(401);
+          done();
+        });
+      });
+
+      it('PUT should update the currently logged in user', done => {
+        client.headers.authorization = 'JWT ' + token;
+
+        client.put('/users', { email: 'updated@email.com' }, (err, req, res, obj) => {
+          if(err) {
+            return done(err);
+          }
+
+          obj.should.exist;
+          obj.id.should.exist;
           done();
         });
       });

@@ -70,7 +70,7 @@ describe('Server:', () => {
       });
     });
 
-    it('PUT should return a 401 if jwt token is missing', done => {
+    it('PUT /:id should return a 401 if jwt token is missing', done => {
       client.headers.authorization = null;
 
       client.put('/boards/something', {}, (err, req, res) => {
@@ -79,7 +79,7 @@ describe('Server:', () => {
       });
     });
 
-    it('PUT should update a board', done => {
+    it('PUT /:id should update a board', done => {
       client.headers.authorization = 'JWT ' + token;
 
       let updates = { title: 'another title' };
@@ -95,14 +95,14 @@ describe('Server:', () => {
       });
     });
 
-    it('PUT with nonexistent id should return a 404', done => {
+    it('PUT /:id with nonexistent id should return a 404', done => {
       client.put('/boards/abcdefabcdef', {}, (err, req, res) => {
         res.statusCode.should.equal(404);
         done();
       });
     });
 
-    it('GET with id should return a 401 if jwt token is missing', done => {
+    it('GET /:id should return a 401 if jwt token is missing', done => {
       client.headers.authorization = null;
 
       client.get('/boards/something', (err, req, res) => {
@@ -111,7 +111,7 @@ describe('Server:', () => {
       });
     });
 
-    it('GET with id should return a board', done => {
+    it('GET /:id should return a board', done => {
       client.headers.authorization = 'JWT ' + token;
 
       client.get('/boards/' + board_id, (err, req, res, obj) => {
@@ -126,7 +126,7 @@ describe('Server:', () => {
       });
     });
 
-    it('GET with nonexistent id should return a 404', done => {
+    it('GET /:id with nonexistent id should return a 404', done => {
       client.get('/boards/abcdefabcdef', (err, req, res) => {
         res.statusCode.should.equal(404);
         done();
@@ -155,7 +155,7 @@ describe('Server:', () => {
       });
     });
 
-    it('DELETE should return a 401 if jwt token is missing', done => {
+    it('DELETE /:id should return a 401 if jwt token is missing', done => {
       client.headers.authorization = null;
 
       client.del('/boards/abc', (err, req, res) => {
@@ -164,7 +164,7 @@ describe('Server:', () => {
       });
     });
 
-    it('DELETE with id should delete a board', done => {
+    it('DELETE /:id should delete a board', done => {
       client.headers.authorization = 'JWT ' + token;
 
       client.del('/boards/' + board_id, (err, req, res) => {
@@ -177,7 +177,7 @@ describe('Server:', () => {
       });
     });
 
-    it('DELETE with nonexistent id should return a 404', done => {
+    it('DELETE /:id with nonexistent id should return a 404', done => {
       client.del('/boards/abcdefabcdef', (err, req, res) => {
         res.statusCode.should.equal(404);
         done();

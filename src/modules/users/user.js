@@ -28,6 +28,11 @@ export default class User {
     return this.repository.getByUsername(username);
   }
 
+  update(id, updates) {
+    delete updates.username;
+    return this.repository.update(id, updates);
+  }
+
   /*
   getAll() {
     return this.repository.getAll();

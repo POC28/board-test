@@ -59,6 +59,21 @@ export default function bootstrap (app, user) {
     });
   });
 
+  app.put(basePath, passport.authenticate('jwt', { session: false }), (req, res, next) => {
+    let token = req.headers.authorization.split(' ')[1];
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if(err) {
+        res.send(401);
+      }
+
+      user.update(decoded.id, req.body).then(result => {
+        res.send(result);
+        next();
+      }, defaultErrorHandler(res, next));
+    });
+  });
+
   /*
   app.get(basePath, (req, res, next) => {
     user.getAll().then(result => {
