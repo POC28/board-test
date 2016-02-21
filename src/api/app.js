@@ -27,6 +27,12 @@ export default function runServer(modules) {
   }));
   */
 
+  app.get('/', (req, res, next) => {
+    return {
+      routes: 'Routes will appear here later'
+    };
+  });
+
   bindRoutes(app, modules, passport);
 
   let port = process.env.PORT || 9000;
