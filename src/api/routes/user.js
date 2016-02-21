@@ -1,5 +1,7 @@
 'use strict';
 
+import jwt from 'jsonwebtoken';
+
 let basePath = '/users';
 
 let defaultErrorHandler = function (res, next) {
@@ -30,7 +32,13 @@ export default function bootstrap (app, user) {
 
   app.post(basePath + '/login', (req, res, next) => {
     user.login(req.body).then(result => {
-      res.send(result ? result : 401);
+      if(!result) {
+        res.send(401);
+        return next();
+      }
+
+      let token = jwt.sign(result, process.env.JWT_SECRET, { expiresIn: 86400 });
+      res.send({ token: token });
       next();
     }, defaultErrorHandler(res, next));
   });
