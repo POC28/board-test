@@ -43,10 +43,7 @@ export default class UserRepository {
 
         let token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: 86400 });
         resolve({ token: token });
-      }, (err) => {
-        console.log(err);
-        reject(err);
-      });
+      }, reject);
     });
   }
 }
