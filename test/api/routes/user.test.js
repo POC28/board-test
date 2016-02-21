@@ -147,7 +147,7 @@ describe('Server:', () => {
 
   after(() => {
     server.close();
-    db.dropDatabase();
+    db.dropDatabase(done => done());
   });
 
 });

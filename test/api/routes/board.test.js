@@ -2,6 +2,8 @@
 
 'use strict';
 
+import jwt from 'jsonwebtoken';
+
 import {
   MongoClient,
   setupModules,
@@ -9,11 +11,18 @@ import {
   client
 } from '../serverUtils';
 
+process.env.JWT_SECRET = 'mymagicalsecret';
 let mongoURL = 'mongodb://localhost/infinityboard_test';
 
 describe('Server:', () => {
   let server;
   let db;
+  let token;
+  let user = {
+    username: 'username',
+    password: 'password',
+    email: 'b@b.com'
+  };
 
   before((done) => {
     MongoClient.connect(mongoURL, (err, database) => {
@@ -22,15 +31,31 @@ describe('Server:', () => {
       }
 
       db = database;
-      server = runServer(setupModules(db));
-      done();
+      let modules = setupModules(db);
+      server = runServer(modules);
+
+      modules.user.register(Object.assign({}, user)).then(() => {
+        modules.user.login(user).then(data => {
+          token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: 86400 });
+          done();
+        }, done);
+      }, done);
     });
   });
 
   context('/boards', () => {
     let board_id;
 
+    it('POST should return a 401 if jwt token is missing', done => {
+      client.post('/boards', {}, (err, req, res) => {
+        res.statusCode.should.equal(401);
+        done();
+      });
+    });
+
     it('POST should create a new board', done => {
+      client.headers.authorization = 'JWT ' + token;
+
       let board = { title: 'board' };
 
       client.post('/boards', board, (err, req, res, obj) => {
@@ -45,7 +70,18 @@ describe('Server:', () => {
       });
     });
 
+    it('PUT should return a 401 if jwt token is missing', done => {
+      client.headers.authorization = null;
+
+      client.put('/boards/something', {}, (err, req, res) => {
+        res.statusCode.should.equal(401);
+        done();
+      });
+    });
+
     it('PUT should update a board', done => {
+      client.headers.authorization = 'JWT ' + token;
+
       let updates = { title: 'another title' };
 
       client.put('/boards/' + board_id, updates, (err, req, res, obj) => {
@@ -66,7 +102,18 @@ describe('Server:', () => {
       });
     });
 
+    it('GET with id should return a 401 if jwt token is missing', done => {
+      client.headers.authorization = null;
+
+      client.get('/boards/something', (err, req, res) => {
+        res.statusCode.should.equal(401);
+        done();
+      });
+    });
+
     it('GET with id should return a board', done => {
+      client.headers.authorization = 'JWT ' + token;
+
       client.get('/boards/' + board_id, (err, req, res, obj) => {
         if(err) {
           return done(err);
@@ -86,7 +133,18 @@ describe('Server:', () => {
       });
     });
 
+    it('GET should return a 401 if jwt token is missing', done => {
+      client.headers.authorization = null;
+
+      client.get('/boards', (err, req, res) => {
+        res.statusCode.should.equal(401);
+        done();
+      });
+    });
+
     it('GET all should return all boards', done => {
+      client.headers.authorization = 'JWT ' + token;
+
       client.get('/boards', (err, req, res, obj) => {
         if(err) {
           return done(err);
@@ -97,7 +155,18 @@ describe('Server:', () => {
       });
     });
 
+    it('DELETE should return a 401 if jwt token is missing', done => {
+      client.headers.authorization = null;
+
+      client.del('/boards/abc', (err, req, res) => {
+        res.statusCode.should.equal(401);
+        done();
+      });
+    });
+
     it('DELETE with id should delete a board', done => {
+      client.headers.authorization = 'JWT ' + token;
+
       client.del('/boards/' + board_id, (err, req, res) => {
         if(err) {
           return done(err);
@@ -117,9 +186,9 @@ describe('Server:', () => {
 
   });
 
-  after(() => {
+  after(done => {
     server.close();
-    db.dropDatabase();
+    db.dropDatabase(() => done());
   });
 
 });
