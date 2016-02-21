@@ -15,13 +15,36 @@ export default class UserRepository {
         }
 
         this.collection.insert(user).then(result => {
-          resolve(result.ops[0]);
+          let user = result.ops[0];
+          user.id = user._id;
+          delete user._id;
+          resolve(user);
         }, reject);
       }, reject);
     });
   }
 
   getByUsername(username) {
-    return this.collection.findOne({ username: username });
+    return new Promise((resolve, reject) => {
+      this.collection.findOne({ username: username }).then(user => {
+        if(!user) {
+          return resolve(user);
+        }
+
+        user.id = user._id;
+        delete user._id;
+        resolve(user);
+      }, reject);
+    });
+  }
+
+  get(id) {
+    return new Promise((resolve, reject) => {
+      this.collection.findOne({ _id: new ObjectID(id) }).then(user => {
+        user.id = user._id;
+        delete user._id;
+        resolve(user);
+      }, reject);
+    });
   }
 }

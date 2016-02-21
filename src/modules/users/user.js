@@ -24,6 +24,10 @@ export default class User {
     });
   }
 
+  getByUsername(username) {
+    return this.repository.getByUsername(username);
+  }
+
   /*
   getAll() {
     return this.repository.getAll();

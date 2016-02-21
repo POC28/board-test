@@ -29,6 +29,8 @@ describe('Server:', () => {
   });
 
   context('/users', () => {
+    let token;
+
     let user = {
       username: 'username',
       password: 'password',
@@ -78,6 +80,7 @@ describe('Server:', () => {
           }
 
           obj.token.should.exist;
+          token = obj.token;
           done();
         });
       });
@@ -102,6 +105,22 @@ describe('Server:', () => {
 
         client.post('/users/login', invalidUser, (err, req, res) => {
           res.statusCode.should.equal(401);
+          done();
+        });
+      });
+    });
+
+    context('/current', () => {
+      it('GET with token should return the current user', done => {
+        client.headers.Authorization = 'Bearer ' + token;
+
+        client.get('/users/current', (err, req, res, obj) => {
+          if(err) {
+            return done(err);
+          }
+
+          obj.should.exist;
+          obj.username.should.equal(user.username);
           done();
         });
       });

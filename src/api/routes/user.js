@@ -43,6 +43,21 @@ export default function bootstrap (app, user) {
     }, defaultErrorHandler(res, next));
   });
 
+  app.get(basePath + '/current', (req, res, next) => {
+    if(!req.headers.authorization || !req.headers.authorization.startsWith('Bearer')) {
+      res.send(401);
+      return next();
+    }
+
+    let token = req.headers.authorization.split(' ')[1];
+    let data = jwt.verify(token, process.env.JWT_SECRET);
+
+    user.getByUsername(data.username).then(result => {
+      res.send(result);
+      next();
+    }, defaultErrorHandler(res, next));
+  });
+
   /*
   app.get(basePath, (req, res, next) => {
     user.getAll().then(result => {
