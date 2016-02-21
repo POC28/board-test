@@ -20,13 +20,14 @@ export default function bootstrap (app, modules) {
     }
 
     modules.user.register(req.body).then(result => {
-      let status = 204;
-
       if(!result) {
-        status = 409;
+        res.send(409);
+        return next();
       }
 
-      res.send(status);
+      let token = jwt.sign(result, process.env.JWT_SECRET, { expiresIn: 86400 });
+      
+      res.send({ token: token });
       next();
     }, defaultErrorHandler(res, next));
   });

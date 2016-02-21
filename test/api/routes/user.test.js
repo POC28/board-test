@@ -39,12 +39,13 @@ describe('Server:', () => {
 
     context('/register', () => {
       it('POST should register a new user', done => {
-        client.post('/users/register', user, (err, req, res) => {
+        client.post('/users/register', user, (err, req, res, obj) => {
           if(err) {
             return done(err);
           }
 
-          res.statusCode.should.equal(204);
+          obj.should.exist;
+          obj.token.should.exist;
           done();
         });
       });

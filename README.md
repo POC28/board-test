@@ -6,10 +6,19 @@
 
 ## Run tests
 
-**Note: this requires a running mongodb server at :27017**
+**Note: this requires a local running mongodb server**
 
 `$ gulp`
 
+## Set environment variables
+
+You need to set the following environment variables for running the server.
+
+```
+JWT_SECRET={some random string}
+MONGO_URI={mongodb uri}
+```
+
 ## Start server
 
-`$ gulp run`
+`$ gulp run` or `$ node lib/index.js`
