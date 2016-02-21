@@ -18,7 +18,7 @@ export default class User {
         }
 
         this.boardRepository.create({ title: '' }).then(board => {
-          this.update(newUser.id, { root_board: board.id }).then(result => {
+          this.update(newUser.id, { root_board: board.id }).then(() => {
             newUser.root_board = board.id;
             resolve(newUser);
           }, reject);
