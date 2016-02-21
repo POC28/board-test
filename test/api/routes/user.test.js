@@ -112,7 +112,7 @@ describe('Server:', () => {
 
     context('/current', () => {
       it('GET with token should return the current user', done => {
-        client.headers.Authorization = 'Bearer ' + token;
+        client.headers.authorization = 'JWT ' + token;
 
         client.get('/users/current', (err, req, res, obj) => {
           if(err) {
@@ -121,6 +121,24 @@ describe('Server:', () => {
 
           obj.should.exist;
           obj.username.should.equal(user.username);
+          done();
+        });
+      });
+
+      it('GET without access token should return a 401', done => {
+        client.headers.authorization = null;
+
+        client.get('/users/current', (err, req, res) => {
+          res.statusCode.should.equal(401);
+          done();
+        });
+      });
+
+      it('GET with invalid access token should return a 401', done => {
+        client.headers.authorization = 'JWT somethingwitty';
+
+        client.get('/users/current', (err, req, res) => {
+          res.statusCode.should.equal(401);
           done();
         });
       });

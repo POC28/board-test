@@ -41,6 +41,10 @@ export default class UserRepository {
   get(id) {
     return new Promise((resolve, reject) => {
       this.collection.findOne({ _id: new ObjectID(id) }).then(user => {
+        if(!user) {
+          return resolve(user);
+        }
+        
         user.id = user._id;
         delete user._id;
         resolve(user);

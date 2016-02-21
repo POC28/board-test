@@ -1,6 +1,7 @@
 'use strict';
 
 import jwt from 'jsonwebtoken';
+import passport from 'passport';
 
 let basePath = '/users';
 
@@ -43,19 +44,19 @@ export default function bootstrap (app, user) {
     }, defaultErrorHandler(res, next));
   });
 
-  app.get(basePath + '/current', (req, res, next) => {
-    if(!req.headers.authorization || !req.headers.authorization.startsWith('Bearer')) {
-      res.send(401);
-      return next();
-    }
-
+  app.get(basePath + '/current', passport.authenticate('jwt', { session: false }), (req, res, next) => {
     let token = req.headers.authorization.split(' ')[1];
-    let data = jwt.verify(token, process.env.JWT_SECRET);
 
-    user.getByUsername(data.username).then(result => {
-      res.send(result);
-      next();
-    }, defaultErrorHandler(res, next));
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if(err) {
+        res.send(401);
+      }
+      
+      user.getByUsername(decoded.username).then(result => {
+        res.send(result);
+        next();
+      }, defaultErrorHandler(res, next));
+    });
   });
 
   /*
