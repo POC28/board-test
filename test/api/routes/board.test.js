@@ -22,6 +22,16 @@ function updateUserData(modules, username, updates, done) {
   }, done);
 }
 
+function addChildBoards(modules, board_id, done) {
+  let fns = [{title: 'title1'}, {title: 'title2'}, {title: 'title3'}].map(board => {
+    return modules.board.create(board);
+  });
+
+  Promise.all(fns).then(values => {
+    done(null, values.map(item => item.id));
+  }, done);
+}
+
 describe('Server:', () => {
   let server;
   let db;
@@ -153,6 +163,37 @@ describe('Server:', () => {
       });
     });
 
+    it('GET /:id/children should return a 401 if jwt token is missing', done => {
+      client.headers.authorization = null;
+
+      client.get('/boards/' + board_id + '/children', (err, req, res) => {
+        res.statusCode.should.equal(401);
+        done();
+      });
+    });
+
+    it('GET /:id/children should return board children', done => {
+      client.headers.authorization = 'JWT ' + token;
+
+      addChildBoards(modules, board_id, function (err, ids) {
+        if(err) {
+          return done(err);
+        }
+
+        modules.board.update(board_id, { children: ids }).then(() => {
+          client.get('/boards/' + board_id + '/children', (err, req, res, obj) => {
+            if(err) {
+              return done(err);
+            }
+
+            obj.should.exist;
+            obj.length.should.equal(3);
+            done();
+          });
+        }, done);
+      });
+    });
+
     it('GET /root should return a 401 if jwt token is missing', done => {
       client.headers.authorization = null;
 
@@ -193,7 +234,7 @@ describe('Server:', () => {
           return done(err);
         }
 
-        obj.length.should.equal(1);
+        obj.length.should.equal(4);
         done();
       });
     });

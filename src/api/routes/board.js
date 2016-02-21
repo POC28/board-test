@@ -7,7 +7,7 @@ let basePath = '/boards';
 
 let defaultErrorHandler = function (res, next) {
   return function (err) {
-    res.send(500);
+    res.send(500, err);
     next(err);
   };
 };
@@ -38,6 +38,13 @@ export default function bootstrap (app, modules) {
 
   app.get(basePath + '/:id', passport.authenticate('jwt', { session: false }), (req, res, next) => {
     modules.board.get(req.params.id).then(result => {
+      res.send(result || 404);
+      next();
+    }, defaultErrorHandler(res, next));
+  });
+
+  app.get(basePath + '/:id/children', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+    modules.board.getChildren(req.params.id).then(result => {
       res.send(result || 404);
       next();
     }, defaultErrorHandler(res, next));

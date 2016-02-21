@@ -42,6 +42,10 @@ export default class UserRepository {
 
   update(id, updates) {
     return new Promise((resolve, reject) => {
+      if (Object.keys(updates).length === 0) {
+        return resolve(null);
+      }
+
       this.collection.updateOne({ _id: new ObjectID(id) }, { $set: updates }).then(result => {
         let res = result.result.nModified > 0 ? { id: id } : null;
         resolve(res);

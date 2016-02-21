@@ -35,6 +35,22 @@ export default class BoardRepository {
     });
   }
 
+  getList(ids) {
+    return new Promise((resolve, reject) => {
+      ids = ids.map((id) => new ObjectID(id));
+
+      this.collection.find({ _id: { $in: ids } }).toArray().then(results => {
+        results = results.map(item => {
+          item.id = item._id;
+          delete item._id;
+          return item;
+        });
+
+        resolve(results);
+      }, reject);
+    });
+  }
+
   create(board) {
     return new Promise((resolve, reject) => {
       this.collection.insert(board).then(result => {
@@ -48,7 +64,11 @@ export default class BoardRepository {
 
   update(id, updates) {
     return new Promise((resolve, reject) => {
-      this.collection.updateOne({ _id: new ObjectID(id) }, updates).then(result => {
+      if (Object.keys(updates).length === 0) {
+        return resolve(null);
+      }
+
+      this.collection.updateOne({ _id: new ObjectID(id) }, { $set: updates }).then(result => {
         let res = result.result.nModified > 0 ? { id: id } : null;
         resolve(res);
       }, reject);

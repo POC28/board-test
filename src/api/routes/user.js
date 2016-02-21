@@ -7,7 +7,7 @@ let basePath = '/users';
 
 let defaultErrorHandler = function (res, next) {
   return function (err) {
-    res.send(500);
+    res.send(500, err);
     next(err);
   };
 };
