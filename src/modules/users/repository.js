@@ -8,6 +8,8 @@ export default class UserRepository {
   }
 
   register(user) {
+    user = Object.assign({}, user);
+
     return new Promise((resolve, reject) => {
       this.collection.findOne({ username: user.username }).then(existing => {
         if(existing) {
@@ -40,7 +42,7 @@ export default class UserRepository {
 
   update(id, updates) {
     return new Promise((resolve, reject) => {
-      this.collection.updateOne({ _id: new ObjectID(id) }, updates).then(result => {
+      this.collection.updateOne({ _id: new ObjectID(id) }, { $set: updates }).then(result => {
         let res = result.result.nModified > 0 ? { id: id } : null;
         resolve(res);
       }, reject);

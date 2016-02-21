@@ -18,7 +18,7 @@ export default class User {
         if(!user || !bcrypt.compareSync(credentials.password, user.password)) {
           return resolve(false);
         }
-
+        
         resolve(user);
       }, reject);
     });
@@ -29,6 +29,7 @@ export default class User {
   }
 
   update(id, updates) {
+    updates = Object.assign({}, updates);
     delete updates.username;
     return this.repository.update(id, updates);
   }

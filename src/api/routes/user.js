@@ -12,14 +12,14 @@ let defaultErrorHandler = function (res, next) {
   };
 };
 
-export default function bootstrap (app, user) {
+export default function bootstrap (app, modules) {
   app.post(basePath + '/register', (req, res, next) => {
     if(!req.body.username || !req.body.password) {
       res.send(422);
       return next();
     }
 
-    user.register(req.body).then(result => {
+    modules.user.register(req.body).then(result => {
       let status = 204;
 
       if(!result) {
@@ -32,7 +32,7 @@ export default function bootstrap (app, user) {
   });
 
   app.post(basePath + '/login', (req, res, next) => {
-    user.login(req.body).then(result => {
+    modules.user.login(req.body).then(result => {
       if(!result) {
         res.send(401);
         return next();
@@ -52,7 +52,7 @@ export default function bootstrap (app, user) {
         res.send(401);
       }
       
-      user.getByUsername(decoded.username).then(result => {
+      modules.user.getByUsername(decoded.username).then(result => {
         res.send(result);
         next();
       }, defaultErrorHandler(res, next));
@@ -67,7 +67,7 @@ export default function bootstrap (app, user) {
         res.send(401);
       }
 
-      user.update(decoded.id, req.body).then(result => {
+      modules.user.update(decoded.id, req.body).then(result => {
         res.send(result);
         next();
       }, defaultErrorHandler(res, next));

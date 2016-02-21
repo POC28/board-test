@@ -14,10 +14,19 @@ import {
 process.env.JWT_SECRET = 'mymagicalsecret';
 let mongoURL = 'mongodb://localhost/infinityboard_test';
 
+function updateUserData(modules, username, updates, done) {
+  modules.user.getByUsername(username).then(data => {
+    modules.user.update(data.id, updates).then(() => {
+      done(null);
+    }, done);
+  }, done);
+}
+
 describe('Server:', () => {
   let server;
   let db;
   let token;
+  let modules;
   let user = {
     username: 'username',
     password: 'password',
@@ -31,7 +40,7 @@ describe('Server:', () => {
       }
 
       db = database;
-      let modules = setupModules(db);
+      modules = setupModules(db);
       server = runServer(modules);
 
       modules.user.register(Object.assign({}, user)).then(() => {
@@ -66,7 +75,18 @@ describe('Server:', () => {
         obj.should.exist;
         obj.title.should.equal(board.title);
         board_id = obj.id;
-        done();
+        user.root_board = board_id;
+
+        updateUserData(modules, user.username, { root_board: board_id }, function (err) {
+          if(err) {
+            console.log(err);
+          }
+
+          modules.user.login(user).then(data => {
+            token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: 86400 });
+            done();
+          }, done);
+        }, done);
       });
     });
 
@@ -129,6 +149,29 @@ describe('Server:', () => {
     it('GET /:id with nonexistent id should return a 404', done => {
       client.get('/boards/abcdefabcdef', (err, req, res) => {
         res.statusCode.should.equal(404);
+        done();
+      });
+    });
+
+    it('GET /root should return a 401 if jwt token is missing', done => {
+      client.headers.authorization = null;
+
+      client.get('/boards/root', (err, req, res) => {
+        res.statusCode.should.equal(401);
+        done();
+      });
+    });
+
+    it('GET /root should return the currently logged in user\'s root board', done => {
+      client.headers.authorization = 'JWT ' + token;
+
+      client.get('/boards/root', (err, req, res, obj) => {
+        if(err) {
+          return done(err);
+        }
+
+        obj.should.exist;
+        obj.id.should.equal(user.root_board);
         done();
       });
     });
