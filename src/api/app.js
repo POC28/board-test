@@ -9,6 +9,7 @@ let app = restify.createServer({
   name: 'infinityBoard'
 });
 
+app.use(restify.fullResponse());
 app.use(restify.bodyParser());
 app.use(restify.CORS());
 
