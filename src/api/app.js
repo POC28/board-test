@@ -28,9 +28,9 @@ export default function runServer(modules) {
   */
 
   app.get('/', (req, res, next) => {
-    return {
+    res.send({
       routes: 'Routes will appear here later'
-    };
+    });
   });
 
   bindRoutes(app, modules, passport);
