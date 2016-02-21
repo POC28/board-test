@@ -3,13 +3,28 @@
 import bcrypt from 'bcrypt-nodejs';
 
 export default class User {
-  constructor(repository) {
+  constructor(repository, boardRepository) {
     this.repository = repository;
+    this.boardRepository = boardRepository;
   }
 
   register(user) {
-    user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
-    return this.repository.register(user);
+    return new Promise((resolve, reject) => {
+      user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
+
+      this.repository.register(user).then(newUser => {
+        if(!newUser) {
+          return resolve(null);
+        }
+
+        this.boardRepository.create({ title: '' }).then(board => {
+          this.update(newUser.id, { root_board: board.id }).then(result => {
+            newUser.root_board = board.id;
+            resolve(newUser);
+          }, reject);
+        }, reject);
+      }, reject);
+    });
   }
 
   login(credentials) {

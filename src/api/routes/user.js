@@ -26,8 +26,9 @@ export default function bootstrap (app, modules) {
       }
 
       let token = jwt.sign(result, process.env.JWT_SECRET, { expiresIn: 86400 });
+      result.token = token;
       
-      res.send({ token: token });
+      res.send(result);
       next();
     }, defaultErrorHandler(res, next));
   });

@@ -46,6 +46,8 @@ describe('Server:', () => {
 
           obj.should.exist;
           obj.token.should.exist;
+          obj.root_board.should.exist;
+          obj.root_board.length.should.be.above(0);
           done();
         });
       });

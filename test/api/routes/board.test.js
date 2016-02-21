@@ -234,7 +234,7 @@ describe('Server:', () => {
           return done(err);
         }
 
-        obj.length.should.equal(4);
+        obj.length.should.equal(5); // don't forget the board created on registration
         done();
       });
     });
