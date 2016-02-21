@@ -12,9 +12,10 @@ import {
 process.env.JWT_SECRET = 'mymagicalsecret';
 let mongoURL = 'mongodb://localhost/infinityboard_test';
 
-describe('Server:', () => {
+describe('Server:', function () {
   let server;
   let db;
+  let self = this;
 
   before((done) => {
     MongoClient.connect(mongoURL, (err, database) => {
@@ -157,6 +158,7 @@ describe('Server:', () => {
       });
 
       it('PUT should update the currently logged in user', done => {
+        self.timeout(3000);
         client.headers.authorization = 'JWT ' + token;
 
         client.put('/users', { email: 'updated@email.com' }, (err, req, res, obj) => {
