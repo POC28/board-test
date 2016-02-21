@@ -30,7 +30,7 @@ export default function runServer(modules) {
   app.get('/', (req, res, next) => {
     res.send({
       routes: 'Routes will appear here later'
-    };
+    });
     next();
   });
 
