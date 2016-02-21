@@ -17,7 +17,7 @@ export default class BoardRepository {
         });
 
         resolve(results);
-      });
+      }, reject);
     });
   }
 

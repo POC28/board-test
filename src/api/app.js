@@ -2,7 +2,7 @@
 
 import restify from 'restify';
 import passport from 'passport';
-import passportJWT from 'passport-jwt';
+//import passportJWT from 'passport-jwt';
 import bindRoutes from './routes';
 
 let app = restify.createServer({
@@ -31,6 +31,6 @@ export default function runServer(modules) {
 
   let port = process.env.PORT || 9000;
 
-  app.listen(port, () => console.log('server running on port ' + port));
+  app.listen(port);
   return app;
 }
